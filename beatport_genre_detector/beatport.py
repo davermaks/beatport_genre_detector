@@ -3,11 +3,27 @@ import requests
 from bs4 import BeautifulSoup
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, TIT2
+import json
 
 MUSIC_DIR = "/Users/admin/Music/yandex.music/House"
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0"
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "Accept-Encoding": "identity",
+    "Accept-Language": "ru-RU,ru;q=0.9",
+    "Cache-Control": "max-age=0",
+    "Dnt": "1",
+    "Priority": "u=0, i",
+    "Sec-Ch-Ua": '"Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"',
+    "Sec-Ch-Ua-Mobile": "?0",
+    "Sec-Ch-Ua-Platform": '"macOS"',
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
 }
 
 def parse_filename(filename):
@@ -20,7 +36,7 @@ def parse_filename(filename):
 
 def search_beatport(artist, track):
     query = f"{artist} {track}"
-    url = f"https://www.beatport.com/search?q={query.replace(' ', '%20')}"
+    url = f"https://www.beatport.com/search?q={query.replace(' ', '+')}"
     
     response = requests.get(url, headers=HEADERS)
     if response.status_code != 200:
@@ -29,17 +45,19 @@ def search_beatport(artist, track):
     soup = BeautifulSoup(response.text, "html.parser")
 
     # Ищем первый результат
-    results = soup.select("li.bucket-item")
+    # results = soup.select("li.bucket-item")
+    result = soup.find("script", type="application/json", id="__NEXT_DATA__")
 
-    if not results:
+    if not result:
         return None
+    
+    script_text = json.loads(result.contents[0])
 
-    first = results[0]
-
+    # scores = result.select('["score"]:')
     # Жанр обычно есть в ссылке
-    genre_tag = first.select_one(".buk-track-meta__genres")
+    genre_tag = script_text['props']['pageProps']['dehydratedState']['queries'][0]['state']['data']['tracks']['data'][0]['genre'][0]['genre_name']
     if genre_tag:
-        return genre_tag.text.strip()
+        return genre_tag
 
     return None
 
