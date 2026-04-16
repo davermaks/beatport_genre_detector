@@ -1,8 +1,8 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-from mutagen.easyid3 import EasyID3
-from mutagen.id3 import ID3, TIT2
+# from mutagen.easyid3 import EasyID3
+# from mutagen.id3 import ID3, TIT2
 import json
 
 MUSIC_DIR = "/Users/admin/Music/yandex.music/House"
@@ -59,21 +59,21 @@ def search_beatport(artist, track):
         genre_tag = script_text['props']['pageProps']['dehydratedState']['queries'][0]['state']['data']['tracks']['data'][0]['genre'][0]['genre_name']
     except:
         genre_tag = None
-        
+
     if genre_tag:
         return genre_tag
 
     return None
 
 
-def set_genre(filepath, genre):
-    try:
-        audio = EasyID3(filepath)
-    except:
-        audio = ID3()
+# def set_genre(filepath, genre):
+#     try:
+#         audio = EasyID3(filepath)
+#     except:
+#         audio = ID3()
 
-    audio["genre"] = genre
-    audio.save(filepath)
+#     audio["genre"] = genre
+#     audio.save(filepath)
 
 
 def process_files():
