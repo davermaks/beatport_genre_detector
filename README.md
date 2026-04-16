@@ -13,5 +13,7 @@
 
 Вместо `MUSIC_DIR = "/Users/admin/Music/yandex.music/House"` 
 указать (например, для windows): `MUSIC_DIR = "C:\Users\mlazarev\Desktop\LESSONS\music\techno"`
+![Alt text](/screenshots/music_dir.png)
 
 Для запуска скрипта необходимо через терминал ("Командная строка" в Windows) выполнить команду `python3 beatport.py`
+![Alt text](/screenshots/execute_command.png)
