@@ -55,7 +55,11 @@ def search_beatport(artist, track):
 
     # scores = result.select('["score"]:')
     # Жанр обычно есть в ссылке
-    genre_tag = script_text['props']['pageProps']['dehydratedState']['queries'][0]['state']['data']['tracks']['data'][0]['genre'][0]['genre_name']
+    try:
+        genre_tag = script_text['props']['pageProps']['dehydratedState']['queries'][0]['state']['data']['tracks']['data'][0]['genre'][0]['genre_name']
+    except:
+        genre_tag = None
+        
     if genre_tag:
         return genre_tag
 
